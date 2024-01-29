@@ -1,15 +1,16 @@
 #include <iostream>
 #include <cstdlib>
 #include<math.h>
+#include <time.h>
 using namespace std;
-	double particalcount=20;//²É¤l¼Æ 
-	double w=1;//ºD©Ê¤§Åv­« 
-	double c1=2;//¦ÛÅé³Ì¨Î¤§Åv­« 
-	double c2=2;//¥ş°ì³Ì¨Î¤§Åv­« 
-	double gbest[2];//¥ş°ì³Ì¨Î¸Ñ 
-	double min_pos=-100;//³Ì¤p­È 
-	double max_pos=100;//³Ì¤j­È 
-	double max_v=(max_pos-min_pos);//³t«×½d³ò 
+	double particalcount=10;//ç²’å­æ•¸ 
+	double w=1;//æ…£æ€§ä¹‹æ¬Šé‡ 
+	double c1=2;//è‡ªé«”æœ€ä½³ä¹‹æ¬Šé‡ 
+	double c2=2;//å…¨åŸŸæœ€ä½³ä¹‹æ¬Šé‡ 
+	double gbest[2];//å…¨åŸŸæœ€ä½³è§£ 
+	double min_pos=-100;//æœ€å°å€¼ 
+	double max_pos=100;//æœ€å¤§å€¼ 
+	double max_v=(max_pos-min_pos)/2;//é€Ÿåº¦ç¯„åœ 
 
 double RND(){	
 	return ((1.0*rand())/RAND_MAX);
@@ -22,7 +23,7 @@ struct partical
 	double velocity_y;
 	double fitness;
 	double pbest[2];
-}swarm[20];
+}swarm[10];
 
 void initial(){
 	for(int i=0;i<particalcount;i++){
@@ -38,40 +39,40 @@ void fitnessfunction(int i){
 		swarm[i].fitness=fabs(swarm[i].positionx)+fabs(swarm[i].positiony);	
 		cout<<swarm[i].fitness<<" ";
 }
-void refresh(){//¦ì²¾ 
+void refresh(){//ä½ç§» 
 		for(int i=0;i<particalcount;i++){
 		swarm[i].velocity_x=w*swarm[i].velocity_x+RND()*c1*(swarm[i].pbest[0]-swarm[i].positionx)+RND()*c2*(gbest[0]-swarm[i].positionx);			
 		swarm[i].velocity_y=w*swarm[i].velocity_y+RND()*c1*(swarm[i].pbest[1]-swarm[i].positiony)+RND()*c2*(gbest[1]-swarm[i].positiony);			
-		if(swarm[i].velocity_x<-max_v) swarm[i].velocity_x=-max_v;      // ­­¨îx³Ì¤p³t«×
-           else if(swarm[i].velocity_x>max_v) {							// ­­¨îx³Ì¤j³t«×
+		if(swarm[i].velocity_x<-max_v) swarm[i].velocity_x=-max_v;      // é™åˆ¶xæœ€å°é€Ÿåº¦
+           else if(swarm[i].velocity_x>max_v) {							// é™åˆ¶xæœ€å¤§é€Ÿåº¦
 			swarm[i].velocity_x=max_v;}
-		if(swarm[i].velocity_y<-max_v) swarm[i].velocity_y=-max_v;      // ­­¨îy³Ì¤p³t«× 
-           else if(swarm[i].velocity_y>max_v) {							// ­­¨îy³Ì¤j³t«×
+		if(swarm[i].velocity_y<-max_v) swarm[i].velocity_y=-max_v;      // é™åˆ¶yæœ€å°é€Ÿåº¦ 
+           else if(swarm[i].velocity_y>max_v) {							// é™åˆ¶yæœ€å¤§é€Ÿåº¦
 			swarm[i].velocity_y=max_v;}	
 
 		swarm[i].positionx=swarm[i].positionx+swarm[i].velocity_x;
 		swarm[i].positiony=swarm[i].positiony+swarm[i].velocity_y;
 		
-		if(swarm[i].positionx>max_pos) swarm[i].positionx=max_pos; // ­­¨î³Ì¤j¦ì¸m
-        else if(swarm[i].positionx<min_pos) {swarm[i].positionx=min_pos;} // ­­¨î³Ì¤p¦ì¸m
+		if(swarm[i].positionx>max_pos) swarm[i].positionx=max_pos; // é™åˆ¶æœ€å¤§ä½ç½®
+        else if(swarm[i].positionx<min_pos) {swarm[i].positionx=min_pos;} // é™åˆ¶æœ€å°ä½ç½®
 		
-		if(swarm[i].positiony>max_pos) swarm[i].positiony=max_pos; // ­­¨î³Ì¤j¦ì¸m
-        else if(swarm[i].positiony<min_pos) {swarm[i].positiony=min_pos;} // ­­¨î³Ì¤p¦ì¸m
+		if(swarm[i].positiony>max_pos) swarm[i].positiony=max_pos; // é™åˆ¶æœ€å¤§ä½ç½®
+        else if(swarm[i].positiony<min_pos) {swarm[i].positiony=min_pos;} // é™åˆ¶æœ€å°ä½ç½®
 			}
 		}
-void refreshpbest(){//ºâpbest
+void refreshpbest(){//ç®—pbest
 		double temp;
 		for(int i=0;i<particalcount;i++){			
 			temp=fabs(swarm[i].pbest[0])+fabs(swarm[i].pbest[1]);	
 			fitnessfunction(i);				
-			if(temp>swarm[i].fitness){//§ó·s«áªºfitness¸û¤pªº¸Ü´N¥á¶ipbest				
+			if(temp>swarm[i].fitness){//æ›´æ–°å¾Œçš„fitnessè¼ƒå°çš„è©±å°±ä¸Ÿé€²pbest				
 				swarm[i].pbest[0]=swarm[i].positionx;
 				swarm[i].pbest[1]=swarm[i].positiony;
 				}
 				
 		}
 }	
-void refreshgbest(){//ºâgbest		
+void refreshgbest(){//ç®—gbest		
 	double min=swarm[0].fitness;
 	for(int i=1;i<particalcount;i++){
 		if(swarm[i].fitness<min)
@@ -83,20 +84,20 @@ void refreshgbest(){//ºâgbest
 	}
 } 
 int main(void){
+	srand( time(NULL) );
 	int count=1;
 	initial();
 	for(int i=0;i<particalcount;i++){		
 	fitnessfunction(i);
 	}	
 	refreshgbest();	
-	while((int)gbest[0]!=0||(int)gbest[1]!=0){//¨â­Ó³£¶^¥N¨ì0.¦h´Nµ²§ô	
+	while((int)gbest[0]!=0||(int)gbest[1]!=0){//å…©å€‹éƒ½è·Œä»£åˆ°0.å¤šå°±çµæŸ	
 	count++;
-	refresh();//¦ì²¾ 
-	refreshpbest();//ºâpbest 	
-	refreshgbest();//ºâgbest
+	refresh();//ä½ç§» 
+	refreshpbest();//ç®—pbest 	
+	refreshgbest();//ç®—gbest
 	cout<<"["<<gbest[0]<<"]"<<"["<<gbest[1]<<"]"<<"\n";	
 	}
 	cout<<"["<<(int)gbest[0]<<"]"<<"["<<(int)gbest[1]<<"] "<<count++<<"\n";			 
 	return 0;
 	}	
-
